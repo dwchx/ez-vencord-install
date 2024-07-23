@@ -50,10 +50,10 @@ export interface MicrophoneStore {
 
 export const defaultMicrophoneProfiles = {
     normal: {
-        name: "Normal-low",
+        name: "Normal",
         channels: 2,
         channelsEnabled: true,
-        voiceBitrate: 10,
+        voiceBitrate: 96,
         voiceBitrateEnabled: true
     },
     high: {
