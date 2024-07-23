@@ -1,38 +1,21 @@
-/*
- * Vencord, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 import { createPluginStore, ProfilableInitializer, ProfilableStore, profileable, ProfileableProfile } from "../../philsPluginLibrary";
 import { PluginInfo } from "../constants";
 
-
+// Define the MicrophoneProfile interface for configuring microphone settings
 export interface MicrophoneProfile {
-    freq?: number,
-    pacsize?: number,
-    channels?: number,
-    rate?: number,
+    freq?: number;
+    pacsize?: number;
+    channels?: number;
+    rate?: number;
     voiceBitrate?: number;
-    freqEnabled?: boolean,
+    freqEnabled?: boolean;
     pacsizeEnabled?: boolean;
     channelsEnabled?: boolean;
     rateEnabled?: boolean;
     voiceBitrateEnabled?: boolean;
 }
 
+// Define the MicrophoneStore interface for managing microphone settings
 export interface MicrophoneStore {
     simpleMode?: boolean;
     setSimpleMode: (enabled?: boolean) => void;
@@ -48,6 +31,7 @@ export interface MicrophoneStore {
     setVoiceBitrateEnabled: (enabled?: boolean) => void;
 }
 
+// Default microphone profiles with predefined settings
 export const defaultMicrophoneProfiles = {
     normal: {
         name: "Normal",
@@ -65,24 +49,27 @@ export const defaultMicrophoneProfiles = {
     },
 } as const satisfies Record<string, MicrophoneProfile & ProfileableProfile>;
 
+// Default initializer for the microphone store
 export const microphoneStoreDefault: ProfilableInitializer<MicrophoneStore, MicrophoneProfile> = (set, get) => ({
     simpleMode: true,
-    setSimpleMode: enabled => get().simpleMode = enabled,
-    setChannels: channels => get().currentProfile.channels = channels,
-    setRate: rate => get().currentProfile.rate = rate,
-    setVoiceBitrate: voiceBitrate => get().currentProfile.voiceBitrate = voiceBitrate,
-    setPacsize: pacsize => get().currentProfile.pacsize = pacsize,
-    setFreq: freq => get().currentProfile.freq = freq,
-    setChannelsEnabled: enabled => get().currentProfile.channelsEnabled = enabled,
-    setFreqEnabled: enabled => get().currentProfile.freqEnabled = enabled,
-    setPacsizeEnabled: enabled => get().currentProfile.pacsizeEnabled = enabled,
-    setRateEnabled: enabled => get().currentProfile.rateEnabled = enabled,
-    setVoiceBitrateEnabled: enabled => get().currentProfile.voiceBitrateEnabled = enabled,
+    setSimpleMode: enabled => set(state => ({ ...state, simpleMode: enabled })),
+    setFreq: freq => set(state => ({ ...state, currentProfile: { ...state.currentProfile, freq } })),
+    setPacsize: pacsize => set(state => ({ ...state, currentProfile: { ...state.currentProfile, pacsize } })),
+    setChannels: channels => set(state => ({ ...state, currentProfile: { ...state.currentProfile, channels } })),
+    setRate: rate => set(state => ({ ...state, currentProfile: { ...state.currentProfile, rate } })),
+    setVoiceBitrate: voiceBitrate => set(state => ({ ...state, currentProfile: { ...state.currentProfile, voiceBitrate } })),
+    setFreqEnabled: enabled => set(state => ({ ...state, currentProfile: { ...state.currentProfile, freqEnabled: enabled } })),
+    setPacsizeEnabled: enabled => set(state => ({ ...state, currentProfile: { ...state.currentProfile, pacsizeEnabled: enabled } })),
+    setChannelsEnabled: enabled => set(state => ({ ...state, currentProfile: { ...state.currentProfile, channelsEnabled: enabled } })),
+    setRateEnabled: enabled => set(state => ({ ...state, currentProfile: { ...state.currentProfile, rateEnabled: enabled } })),
+    setVoiceBitrateEnabled: enabled => set(state => ({ ...state, currentProfile: { ...state.currentProfile, voiceBitrateEnabled: enabled } })),
 });
 
+// Initialize the microphone store as a global variable
 export let microphoneStore: ProfilableStore<MicrophoneStore, MicrophoneProfile>;
 
-export const initMicrophoneStore = () =>
+// Function to initialize the microphone store with default profiles
+export const initMicrophoneStore = () => 
     microphoneStore = createPluginStore(
         PluginInfo.PLUGIN_NAME,
         "MicrophoneStore",
