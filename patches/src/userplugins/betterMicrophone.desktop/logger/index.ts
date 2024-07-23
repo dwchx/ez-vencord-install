@@ -1,23 +1,9 @@
-/*
- * Vencord, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
+// Importing the Logger class from the @utils/Logger module
 import { Logger } from "@utils/Logger";
 
+// Importing the PluginInfo object from the constants module located in the parent directory
 import { PluginInfo } from "../constants";
 
+// Creating a new instance of the Logger class and passing the plugin name from PluginInfo as an argument
+// This logger instance can be used throughout the application for logging purposes
 export const logger = new Logger(PluginInfo.PLUGIN_NAME);
