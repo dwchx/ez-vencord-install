@@ -1,31 +1,43 @@
-// Import necessary functions and components
+/*
+ * Vencord, a modification for Discord's desktop app
+ * Copyright (c) 2023 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { openModalLazy } from "@utils/modal";
+
 import { MicrophoneSettingsModal } from "../components";
 import { PluginInfo } from "../constants";
 import Plugin from "../index";
 import { microphoneStore } from "../stores";
 
-// Define a callback function to be called when the microphone modal is done
 const onMicrophoneModalDone = () => {
-    // Destructure microphonePatcher from Plugin
     const { microphonePatcher } = Plugin;
 
-    // If microphonePatcher exists, force update the transportation options
     if (microphonePatcher)
         microphonePatcher.forceUpdateTransportationOptions();
 };
 
-// Export a function to open the microphone settings modal
 export const openMicrophoneSettingsModal =
     () => openModalLazy(async () => {
-        // Return a function that takes props and renders the MicrophoneSettingsModal component
         return props =>
             <MicrophoneSettingsModal
-                onDone={onMicrophoneModalDone} // Callback for when the modal is done
-                showInfo // Show information flag
-                microphoneStore={microphoneStore} // Pass the microphoneStore to the modal
-                author={PluginInfo.AUTHOR} // Author information from PluginInfo
-                contributors={Object.values(PluginInfo.CONTRIBUTORS)} // List of contributors from PluginInfo
-                {...props} // Spread any additional props
-            />;
+                onDone={onMicrophoneModalDone}
+                showInfo
+                microphoneStore={microphoneStore}
+                author={PluginInfo.AUTHOR}
+                contributors={Object.values(PluginInfo.CONTRIBUTORS)}
+                {...props} />;
     });
