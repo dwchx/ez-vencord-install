@@ -57,10 +57,10 @@ export const defaultMicrophoneProfiles = {
         voiceBitrateEnabled: true
     },
     high: {
-        name: "High-fix",
+        name: "High",
         channels: 2,
         channelsEnabled: true,
-        voiceBitrate: 384,
+        voiceBitrate: 320,
         voiceBitrateEnabled: true
     },
 } as const satisfies Record<string, MicrophoneProfile & ProfileableProfile>;
