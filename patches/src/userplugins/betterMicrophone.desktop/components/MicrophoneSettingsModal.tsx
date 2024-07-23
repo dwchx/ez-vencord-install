@@ -1,8 +1,27 @@
+/*
+ * Vencord, a modification for Discord's desktop app
+ * Copyright (c) 2023 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Flex } from "@components/Flex";
 import { Switch } from "@components/Switch";
 import { ModalSize } from "@utils/modal";
 import { Card, Forms, Select, Slider, TextInput, useEffect, useState } from "@webpack/common";
 import { SelectOption } from "@webpack/types";
+
 import {
     ProfilableStore,
     SettingsModal,
@@ -17,10 +36,22 @@ import { Styles } from "../../philsPluginLibrary/styles";
 import { MicrophoneProfile, MicrophoneStore } from "../stores";
 
 const simpleVoiceBitrates: readonly SelectOption[] = [
-    { label: "Normal", value: 96 },
-    { label: "Medium-High", value: 160 },
-    { label: "High", value: 320 },
-    { label: "Very-High", value: 512 }
+    {
+        label: "Normal",
+        value: 96
+    },
+    {
+        label: "Medium-High",
+        value: 160
+    },
+    {
+        label: "High",
+        value: 320
+    },
+    {
+        label: "Very-High",
+        value: 512
+    }
 ] as const;
 
 export interface MicrophoneSettingsModalProps extends React.ComponentProps<typeof SettingsModal> {
@@ -29,7 +60,7 @@ export interface MicrophoneSettingsModalProps extends React.ComponentProps<typeo
 }
 
 export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => {
-    const { microphoneStore, showInfo, onClose, onDone } = props;
+    const { microphoneStore, showInfo } = props;
 
     const {
         currentProfile,
@@ -85,14 +116,13 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
         setChannelsInput(channels ? channels.toString() : "");
     }, [rate, freq, pacsize, channels]);
 
-    const simpleToggle = (
+    const simpleToggle =
         <Flex style={{ justifyContent: "center", alignItems: "center", gap: "0.6em" }}>
             <Forms.FormTitle style={{ margin: 0 }} tag="h5">Simple</Forms.FormTitle>
             <Switch checked={simpleMode ?? false} disabled={isSaving} onChange={checked => setSimpleMode(checked)} />
-        </Flex>
-    );
+        </Flex>;
 
-    const settingsCardVoiceBitrateSimple = (
+    const settingsCardVoiceBitrateSimple =
         <SettingsModalCard
             title="Audio Bitrate"
             switchEnabled
@@ -110,10 +140,9 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
                     isSelected={(value: number) => value === voiceBitrate}
                     serialize={() => ""} />
             </SettingsModalCardItem>
-        </SettingsModalCard>
-    );
+        </SettingsModalCard>;
 
-    const settingsCardChannelsSimple = (
+    const settingsCardChannelsSimple =
         <SettingsModalCard
             title="Stereo"
             flex={0.2}
@@ -121,15 +150,11 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
             switchProps={{
                 checked: (channelsEnabled && channels === 2) ?? false,
                 disabled: isSaving,
-                onChange: status => {
-                    setChannelsEnabled(status);
-                    setChannels(status ? 2 : 1); // Assuming 1 channel when not enabled
-                }
+                onChange: status => void setChannelsEnabled(status) ?? setChannels(2)
             }}>
-        </SettingsModalCard>
-    );
+        </SettingsModalCard>;
 
-    const settingsCardVoiceBitrate = (
+    const settingsCardVoiceBitrate =
         <SettingsModalCard
             title="Audio Bitrate"
             switchEnabled
@@ -151,10 +176,9 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
                         onValueRender={value => `${value.toFixed(0)}kb/s`} />
                 </div>
             </SettingsModalCardItem>
-        </SettingsModalCard>
-    );
+        </SettingsModalCard>;
 
-    const settingsCardRate = (
+    const settingsCardRate =
         <SettingsModalCard
             title="Sample Rate"
             switchEnabled
@@ -174,10 +198,9 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
                         setRateInput(result ? result.toString() : "");
                     }} />
             </SettingsModalCardItem>
-        </SettingsModalCard>
-    );
+        </SettingsModalCard>;
 
-    const settingsCardFreq = (
+    const settingsCardFreq =
         <SettingsModalCard
             title="Sample Frequency"
             switchEnabled
@@ -197,10 +220,9 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
                         setFreqInput(result ? result.toString() : "");
                     }} />
             </SettingsModalCardItem>
-        </SettingsModalCard>
-    );
+        </SettingsModalCard>;
 
-    const settingsCardPacsize = (
+    const settingsCardPacsize =
         <SettingsModalCard
             title="Pac Size"
             switchEnabled
@@ -220,10 +242,9 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
                         setPacsizeInput(result ? result.toString() : "");
                     }} />
             </SettingsModalCardItem>
-        </SettingsModalCard>
-    );
+        </SettingsModalCard>;
 
-    const settingsCardChannels = (
+    const settingsCardChannels =
         <SettingsModalCard
             title="Channels"
             switchEnabled
@@ -243,24 +264,21 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
                         setChannelsInput(result ? result.toString() : "");
                     }} />
             </SettingsModalCardItem>
-        </SettingsModalCard>
-    );
+        </SettingsModalCard>;
 
-    const settingsCardProfiles = (
+    const settingsCardProfiles =
         <SettingsModalProfilesCard
             flex={0.6}
             onSaveStateChanged={state => setIsSaving(state)}
-            profileableStore={microphoneStore} />
-    );
+            profileableStore={microphoneStore} />;
 
-    const infoCard = (
+    const infoCard =
         <Card style={{ ...Styles.infoCard }}>
             <Forms.FormTitle tag="h5">Important</Forms.FormTitle>
             <Forms.FormText>
                 To take full advantage of this plugin, please disable <span style={{ fontWeight: "bold" }}>Krisp</span> and <span style={{ fontWeight: "bold" }}>Echo Cancellation</span>, otherwise features like Stereo (Channels) will not work.
             </Forms.FormText>
-        </Card>
-    );
+        </Card>;
 
     return (
         <SettingsModal
@@ -274,8 +292,8 @@ export const MicrophoneSettingsModal = (props: MicrophoneSettingsModalProps) => 
             }
             {...props}
             onDone={() => {
-                onClose();
-                onDone && onDone();
+                props.onClose();
+                props.onDone && props.onDone();
             }}
         >
             {simpleMode
