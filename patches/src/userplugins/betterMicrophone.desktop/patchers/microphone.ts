@@ -1,19 +1,34 @@
+/*
+ * Vencord, a modification for Discord's desktop app
+ * Copyright (c) 2023 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Emitter, MediaEngineStore, Patcher, types } from "../../philsPluginLibrary";
 import { patchConnectionAudioTransportOptions } from "../../philsPluginLibrary/patches/audio";
 import { PluginInfo } from "../constants";
 import { logger } from "../logger";
 import { microphoneStore } from "../stores";
 
-// Class to manage and patch microphone settings
 export class MicrophonePatcher extends Patcher {
-    // Private properties to hold media engine store and instance, connection, and transport options
     private mediaEngineStore: types.MediaEngineStore;
     private mediaEngine: types.MediaEngine;
     public connection?: types.Connection;
     public oldSetTransportOptions: (...args: any[]) => void;
     public forceUpdateTransportationOptions: () => void;
 
-    // Constructor initializes the media engine and placeholders for transport options
     constructor() {
         super();
         this.mediaEngineStore = MediaEngineStore;
@@ -22,29 +37,23 @@ export class MicrophonePatcher extends Patcher {
         this.forceUpdateTransportationOptions = () => void 0;
     }
 
-    // Method to apply patches
     public patch(): this {
-        // Unpatch any previous patches to prevent duplication
         this.unpatch();
 
         const { get } = microphoneStore;
 
-        // Function to handle connection events
-        const connectionEventFunction = (connection: types.Connection) => {
-            // Only proceed if the connection context is "default"
-            if (connection.context !== "default") return;
+        const connectionEventFunction =
+            (connection: types.Connection) => {
+                if (connection.context !== "default") return;
 
-            this.connection = connection;
+                this.connection = connection;
 
-            // Patch the connection's audio transport options
-            const { oldSetTransportOptions, forceUpdateTransportationOptions } = patchConnectionAudioTransportOptions(connection, get, logger);
+                const { oldSetTransportOptions, forceUpdateTransportationOptions } = patchConnectionAudioTransportOptions(connection, get, logger);
 
-            // Store the original and updated transport options functions
-            this.oldSetTransportOptions = oldSetTransportOptions;
-            this.forceUpdateTransportationOptions = forceUpdateTransportationOptions;
-        };
+                this.oldSetTransportOptions = oldSetTransportOptions;
+                this.forceUpdateTransportationOptions = forceUpdateTransportationOptions;
+            };
 
-        // Add a listener for the connection event to the media engine's emitter
         Emitter.addListener(
             this.mediaEngine.emitter,
             "on",
@@ -56,7 +65,6 @@ export class MicrophonePatcher extends Patcher {
         return this;
     }
 
-    // Method to remove patches
     public unpatch(): this {
         return this._unpatch();
     }
